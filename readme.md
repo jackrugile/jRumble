@@ -1,14 +1,18 @@
-# jRumble v1.1 - http://jackrugile.com/jrumble
-by Jack Rugile - http://jackrugile.com
+# jRumble v1.1 - [http://jackrugile.com/jrumble](http://jackrugile.com/jrumble)
+by [Jack Rugile](http://jackrugile.com)
+
 Copyright 2011, Jack Rugile
-MIT license - http://www.opensource.org/licenses/mit-license.php
+
+MIT license - [http://www.opensource.org/licenses/mit-license.php](http://www.opensource.org/licenses/mit-license.php)
 
 To use this plugin:
+
 *   Include jQuery and this file in your document
 *   Apply jRumble with a selector:
-		*   $('#my-rumble-object').jrumble();
+	*   $('#my-rumble-object').jrumble();
 
 Options/Defaults (defaults in parentheses):
+
 *   rangeX: (2) - Set the horizontal rumble range (pixels)
 *   rangeY: (2) - Set the vertical rumble range (pixels)
 *   rangeRot: (1) - Set the rotation range (degrees)
