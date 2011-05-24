@@ -7,6 +7,16 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 
 (function($){
 	$.fn.jrumble = function(options){
+	
+    // -ms-transform translates to MsTransform, but the correct property is msTransform
+    var vendors = ['-webkit','-moz','-o','ms']; 
+		function addTransform(obj, value){
+      for(var i=vendors.length;i--;){
+        obj[vendors[i]+'-transform'] = value;
+      } 
+      obj.transform = value;
+      return obj;
+		}
 		
 		// JRUMBLE OPTIONS
 		//---------------------------------
@@ -27,20 +37,17 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			// VARIABLE DECLARATION
 			//---------------------------------
 			$obj = $(this);			
-			var rumbleInterval;	
-			var rangeX = opt.rangeX;
-			var rangeY = opt.rangeY;
-			var rangeRot = opt.rangeRot;
-			rangeX = rangeX*2;
-			rangeY = rangeY*2;
-			rangeRot = rangeRot*2;
-			var rumbleSpeed = opt.rumbleSpeed;			
-			var objPosition = $obj.css('position');
-			var objXrel = opt.posX;
-			var objYrel = opt.posY;
-			var objXmove;
-			var objYmove;
-			var inlineChange;
+			var rumbleInterval,	
+        rangeX = opt.rangeX * 2,
+        rangeY = opt.rangeY * 2,
+        rangeRot = opt.rangeRot * 2,
+        rumbleSpeed = opt.rumbleSpeed,
+        objPosition = $obj.css('position'),
+        objXrel = opt.posX,
+        objYrel = opt.posY,
+        objXmove,
+        objYmove,
+        inlineChange;
 			
 			// SET POSITION RELATION IF CHANGED
 			//---------------------------------
@@ -60,16 +67,17 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			// RUMBLER FUNCTION
 			//---------------------------------			
 			function rumbler(elem) {				
-				var randBool = Math.random();
-				var randX = Math.floor(Math.random() * (rangeX+1)) -rangeX/2;
-				var randY = Math.floor(Math.random() * (rangeY+1)) -rangeY/2;
-				var randRot = Math.floor(Math.random() * (rangeRot+1)) -rangeRot/2;	
+				var randBool = Math.random(),
+          randX = Math.floor(Math.random() * (rangeX+1)) -rangeX/2,
+          randY = Math.floor(Math.random() * (rangeY+1)) -rangeY/2,
+          randRot = Math.floor(Math.random() * (rangeRot+1)) -rangeRot/2,
+          css = addTransform({}, 'rotate('+randRot+'deg)');
 				
 				// IF INLINE, MAKE INLINE-BLOCK FOR ROTATION
 				//---------------------------------
 				if(elem.css('display') === 'inline'){
 					inlineChange = true;
-					elem.css('display', 'inline-block')
+					css.display = 'inline-block';
 				}
 			
 				// ENSURE MOVEMENT
@@ -91,97 +99,59 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 						randY = -1;
 					}
 				}
-				
+			 
 				// RUMBLE BASED ON POSITION
 				//---------------------------------
-				if(objPosition === 'absolute'){
-					elem.css({'position':'absolute','-webkit-transform': 'rotate('+randRot+'deg)', '-moz-transform': 'rotate('+randRot+'deg)', '-o-transform': 'rotate('+randRot+'deg)', 'transform': 'rotate('+randRot+'deg)'});
-					elem.css(objXrel, objXmove+randX+'px');
-					elem.css(objYrel, objYmove+randY+'px');
+				if(objPosition === 'absolute' || objPosition === 'fixed'){
+				  randX += objXmove;
+				  randY += objYmove;
+				} else {
+          css.position = 'relative';
 				}
-				if(objPosition === 'fixed'){
-					elem.css({'position':'fixed','-webkit-transform': 'rotate('+randRot+'deg)', '-moz-transform': 'rotate('+randRot+'deg)', '-o-transform': 'rotate('+randRot+'deg)', 'transform': 'rotate('+randRot+'deg)'});
-					elem.css(objXrel, objXmove+randX+'px');
-					elem.css(objYrel, objYmove+randY+'px');
-				}
-				if(objPosition === 'static' || objPosition === 'relative'){
-					elem.css({'position':'relative','-webkit-transform': 'rotate('+randRot+'deg)', '-moz-transform': 'rotate('+randRot+'deg)', '-o-transform': 'rotate('+randRot+'deg)', 'transform': 'rotate('+randRot+'deg)'});
-					elem.css(objXrel, randX+'px');
-					elem.css(objYrel, randY+'px');
-				}
+				css[objXrel] = randX;
+				css[objYrel] = randY;
+				elem.css(css);
+				
 			} // End rumbler function
+			
+      function startRumble(){
+        var rumblee = $(this);
+        rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
+      }
+      
+      function stopRumble(){
+          var rumblee = $(this);
+          clearInterval(rumbleInterval);
+          rumblee.css(resetRumblerCSS);
+          rumblee.css(objXrel, objXmove+'px');
+          rumblee.css(objYrel, objYmove+'px');
+          if(inlineChange === true){
+            rumblee.css('display','inline');
+          }		
+      }
 			
 			// EVENT TYPES (rumbleEvent)
 			//---------------------------------	
-			var resetRumblerCSS = {'position':objPosition,'-webkit-transform': 'rotate(0deg)', '-moz-transform': 'rotate(0deg)', '-o-transform': 'rotate(0deg)', 'transform': 'rotate(0deg)'};
+			var resetRumblerCSS = addTransform({'position':objPosition}, 'rotate(0deg)');
 			
 			if(opt.rumbleEvent === 'hover'){
-				$obj.hover(
-					function() {
-						var rumblee = $(this);
-						rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
-					},
-					function() {
-						var rumblee = $(this);
-						clearInterval(rumbleInterval);
-						rumblee.css(resetRumblerCSS);
-						rumblee.css(objXrel, objXmove+'px');
-						rumblee.css(objYrel, objYmove+'px');
-						if(inlineChange === true){
-							rumblee.css('display','inline');
-						}
-					}
-				);
+				$obj.hover(startRumble, stopRumble);
 			}
 			
 			if(opt.rumbleEvent === 'click'){
-				$obj.toggle(function(){
-					var rumblee = $(this);
-					rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
-				}, function(){
-					var rumblee = $(this);
-					clearInterval(rumbleInterval);
-					rumblee.css(resetRumblerCSS);
-					rumblee.css(objXrel, objXmove+'px');
-					rumblee.css(objYrel, objYmove+'px');
-					if(inlineChange === true){
-						rumblee.css('display','inline');
-					}
-				});
+				$obj.toggle(startRumble, stopRumble);
 			}
 			
 			if(opt.rumbleEvent === 'mousedown'){
 				$obj.bind({
-					mousedown: function(){
-						var rumblee = $(this);
-						rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
-					}, 
-					mouseup: function(){
-						var rumblee = $(this);
-						clearInterval(rumbleInterval);
-						rumblee.css(resetRumblerCSS);
-						rumblee.css(objXrel, objXmove+'px');
-						rumblee.css(objYrel, objYmove+'px');
-						if(inlineChange === true){
-							rumblee.css('display','inline');
-						}
-					},
-					mouseout: function(){
-						var rumblee = $(this);
-						clearInterval(rumbleInterval);
-						rumblee.css(resetRumblerCSS);
-						rumblee.css(objXrel, objXmove+'px');
-						rumblee.css(objYrel, objYmove+'px');
-						if(inlineChange === true){
-							rumblee.css('display','inline');
-						}
-					}
+					mousedown: startRumble, 
+					mouseup: stopRumble,
+					mouseout: stopRumble
 				});
 			}
 			
 			if(opt.rumbleEvent === 'constant'){
-				var rumblee = $(this);
-				rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
+        startRumble.call(this);
 			}
 			
 		});
