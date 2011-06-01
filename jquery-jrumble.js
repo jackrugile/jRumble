@@ -1,5 +1,5 @@
 /*
-jRumble v1.1 - http://jackrugile.com/jrumble
+jRumble v1.2 - http://jackrugile.com/jrumble
 by Jack Rugile - http://jackrugile.com
 Copyright 2011, Jack Rugile
 MIT license - http://www.opensource.org/licenses/mit-license.php
@@ -17,7 +17,8 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			rumbleSpeed: 10,
 			rumbleEvent: 'hover',
 			posX: 'left',
-			posY: 'top'
+			posY: 'top',
+			rumblee: ''
 		};
 
 		var opt = $.extend(defaults, options);
@@ -41,6 +42,7 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			var objXmove;
 			var objYmove;
 			var inlineChange;
+			var rumblee = opt.rumblee;
 			
 			// SET POSITION RELATION IF CHANGED
 			//---------------------------------
@@ -111,6 +113,13 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 				}
 			} // End rumbler function
 			
+			function findRumblee(root) {
+				if (rumblee === '') {
+					return root;
+				}
+				return $(root).find(rumblee);
+			}
+			
 			// EVENT TYPES (rumbleEvent)
 			//---------------------------------	
 			var resetRumblerCSS = {'position':objPosition,'-webkit-transform': 'rotate(0deg)', '-moz-transform': 'rotate(0deg)', '-o-transform': 'rotate(0deg)', 'transform': 'rotate(0deg)'};
@@ -118,11 +127,11 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			if(opt.rumbleEvent === 'hover'){
 				$obj.hover(
 					function() {
-						var rumblee = $(this);
+						var rumblee = findRumblee($(this));
 						rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
 					},
 					function() {
-						var rumblee = $(this);
+						var rumblee = findRumblee($(this));
 						clearInterval(rumbleInterval);
 						rumblee.css(resetRumblerCSS);
 						rumblee.css(objXrel, objXmove+'px');
@@ -136,10 +145,10 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			
 			if(opt.rumbleEvent === 'click'){
 				$obj.toggle(function(){
-					var rumblee = $(this);
+					var rumblee = findRumblee($(this));
 					rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
 				}, function(){
-					var rumblee = $(this);
+					var rumblee = findRumblee($(this));
 					clearInterval(rumbleInterval);
 					rumblee.css(resetRumblerCSS);
 					rumblee.css(objXrel, objXmove+'px');
@@ -153,11 +162,11 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			if(opt.rumbleEvent === 'mousedown'){
 				$obj.bind({
 					mousedown: function(){
-						var rumblee = $(this);
+						var rumblee = findRumblee($(this));
 						rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
 					}, 
 					mouseup: function(){
-						var rumblee = $(this);
+						var rumblee = findRumblee($(this));
 						clearInterval(rumbleInterval);
 						rumblee.css(resetRumblerCSS);
 						rumblee.css(objXrel, objXmove+'px');
@@ -167,7 +176,7 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 						}
 					},
 					mouseout: function(){
-						var rumblee = $(this);
+						var rumblee = findRumblee($(this));
 						clearInterval(rumbleInterval);
 						rumblee.css(resetRumblerCSS);
 						rumblee.css(objXrel, objXmove+'px');
@@ -180,7 +189,7 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			}
 			
 			if(opt.rumbleEvent === 'constant'){
-				var rumblee = $(this);
+				var rumblee = findRumblee($(this));
 				rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
 			}
 			
