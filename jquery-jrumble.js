@@ -27,7 +27,8 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 			// VARIABLE DECLARATION
 			//---------------------------------
 			$obj = $(this);			
-			var rumbleInterval;	
+			var rumbleInterval;
+			var rumbleOff = true;	
 			var rangeX = opt.rangeX;
 			var rangeY = opt.rangeY;
 			var rangeRot = opt.rangeRot;
@@ -177,6 +178,28 @@ MIT license - http://www.opensource.org/licenses/mit-license.php
 						}
 					}
 				});
+			}
+			
+			if(opt.rumbleEvent === 'dblclick'){
+				$obj.bind({
+					dblclick: function(){
+						var rumblee = $(this);
+						rumbleOff = !rumbleOff;
+						if(rumbleOff){
+							// toggle rumble off
+							clearInterval(rumbleInterval);
+							rumblee.css(resetRumblerCSS);
+							rumblee.css(objXrel, objXmove+'px');
+							rumblee.css(objYrel, objYmove+'px');
+							if(inlineChange === true){
+								rumblee.css('display','inline');
+							}
+						} else {
+							rumbleInterval = setInterval(function() { rumbler(rumblee); }, rumbleSpeed);
+						}
+						
+					}
+				})
 			}
 			
 			if(opt.rumbleEvent === 'constant'){
