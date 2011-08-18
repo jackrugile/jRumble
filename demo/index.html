@@ -129,6 +129,11 @@ $('#demo8').jrumble({
 				<div id="demo12">12</div>
 			</div>
 			
+			<div class="demo-box last">
+				<h4>Dblclick</h4>
+				<div id="demoDblClick">13</div>
+			</div>
+			
 			<div class="view-source">
 				<a href="#">View Source</a>
 				<pre><code>
@@ -146,6 +151,10 @@ $('#demo11').jrumble({
 
 $('#demo12').jrumble({
 	rumbleEvent: 'constant'
+});
+
+$('#demoDblClick').jrumble({
+	rumbleEvent: 'dblclick'
 });
 				</code></pre>
 			</div>			
@@ -307,7 +316,11 @@ $(document).ready(function(){
 	
 	$('#demo12').jrumble({
 		rumbleEvent: 'constant'
-	});	
+	});
+	
+	$('#demoDblClick').jrumble({
+		rumbleEvent: 'dblclick'
+	});
 	
 	$('#demo13').jrumble({
 		posX: 'left',
