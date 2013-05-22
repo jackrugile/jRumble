@@ -1,3 +1,7 @@
+v1.4 - May 22, 2013
+Added rumble time option and generic rumble event to simplify usage. - MS
+Integrated grunt for linting and building minified source. - MS
+
 v1.3 - December 3, 2011
 Internet Explorer filter typo fix ("apha" changed to "alpha")
 

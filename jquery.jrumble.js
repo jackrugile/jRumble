@@ -1,6 +1,7 @@
 /*
-jRumble v1.3 - http://jackrugile.com/jrumble
+jRumble v1.4 - http://jackrugile.com/jrumble
 by Jack Rugile - http://jackrugile.com
+extended by Matt Surabian - http://mattsurabian.com
 
 MIT License
 -----------------------------------------------------------------------------
@@ -22,12 +23,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 			rotation: 1,
 			speed: 15,
 			opacity: false,
-			opacityMin: .5
+			opacityMin: 0.5,
+            rumbleTime: null
 		},
 		opt = $.extend(defaults, options);	
 				
 		return this.each(function(){
-								  
+
 			/*========================================================*/
 			/* Variables
 			/*========================================================*/
@@ -38,6 +40,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				speed = (opt.speed === 0) ? 1 : opt.speed,			
 				opac = opt.opacity,
 				opacm = opt.opacityMin,
+                rumbleTime = opt.rumbleTime,
 				inline,
 				interval;
 			
@@ -53,8 +56,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				/*========================================================*/
 				/* Ensure Movement From Original Position
 				/*========================================================*/				
-				rx = (rx === 0 && x !== 0) ? ((Math.random() < .5) ? 1 : -1) : rx;
-				ry = (ry === 0 && y !== 0) ? ((Math.random() < .5) ? 1 : -1) : ry;	
+				rx = (rx === 0 && x !== 0) ? ((Math.random() < 0.5) ? 1 : -1) : rx;
+				ry = (ry === 0 && y !== 0) ? ((Math.random() < 0.5) ? 1 : -1) : ry;
 				
 				/*========================================================*/
 				/* Check Inline
@@ -109,7 +112,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 				'startRumble': function(e){
 					e.stopPropagation();
 					clearInterval(interval);
-					interval = setInterval(rumbler, speed)
+					interval = setInterval(rumbler, speed);
 				},
 				'stopRumble': function(e){
 					e.stopPropagation();
@@ -118,7 +121,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 						$this.css('display', 'inline');
 					}
 					$this.css(reset);
-				}
+				},
+                'rumble':function(e){
+                    $this.trigger('startRumble');
+                    if(rumbleTime !== null){
+                        setTimeout(function(){
+                            $this.trigger('stopRumble');
+                        },rumbleTime);
+                    }
+                }
 			});		
 			
 		});// End return this.each

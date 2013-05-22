@@ -1,10 +1,11 @@
-# jRumble v1.3
+# jRumble v1.4
 *by Jack Rugile - http://jackrugile.com*
+*extended by Matt Surabian - http://mattsurabian.com*
 
 jRumble is a [jQuery](http://jquery.com) plugin that rumbles, vibrates, shakes, and rotates any element you choose. It's great to use as a hover effect or a way to direct attention to an element.
 
-- **Latest Version:** 1.3
-- **Latest Release Date:** December 3, 2011
+- **Latest Version:** 1.4
+- **Latest Release Date:** May 22, 2013
 - **Original Release Date:** March 30, 2011
 - **Compressed:** 1.47kb
 - **Uncompressed:** 4.84kb
@@ -24,6 +25,14 @@ $('#rumble-element').trigger('startRumble');
 
 // Stop rumble on element
 $('#rumble-element').trigger('stopRumble');
+
+//To have the rumbling occur for a fixed amount of time, initialize with the rumbleTime option
+$('#rumble-element').jrumble({
+    rumbleTime:2000
+});
+
+// Trigger generic rumble event (note: if rumbleTime is not set, the rumble event is identical to startRumble)
+$('#rumble-element').trigger('rumble');
 ```
 
 ### Options
@@ -67,6 +76,11 @@ $('#rumble-element').trigger('stopRumble');
 			<td><em>.5</em></td>
 			<td>When the opacity option is set to true, this controls the minimum opacity while flickering</td>
 		</tr>
+		<tr>
+            <td><strong>rumbleTime</strong></td>
+            <td><em>null</em></td>
+            <td>By initializing the jRumble object with rumbleTime, the generic 'rumble' event can be used to save front end code.  After rumbleTime has elapsed, the rumbling effect will stop.</td>
+        </tr>
 	</tbody>
 </table>
 
